@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        {% load static %}
+        <meta charset="utf-8">
+        <title>NLP</title>
+        <meta name="description" content="Envio de formulario">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="{% static 'forms/css/style.css' %}">
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+
+
+    </head>
+    <body>
+        <div class="sendfile">
+          <h2 class="active">ENVIAR ARCHIVO</h2>
+          <!--<h2 class="nonactive"> asd </h2>-->
+
+          <form action="" method="post">
+            {% csrf_token %}
+            <input type="text" pattern="^[a-zA-Z ]+$" class="text" name="students" autofocus required maxlength="100">
+             <span>Alumnos</span>
+
+            <input type="number" min="1" class="text" name="studentsid" required maxlength="10">
+             <span>Legajo (sin puntos)</span>
+
+              <select class="combobox" required selected="selected">
+                <option value="volvo">Deportes - 82082</option>
+                <option value="volvo">Cono - 82082</option>
+                <option value="volvo">Camo - 82082</option>
+              </select>
+              <span>Materia</span>
+
+             <input type="number" min="1950" max="2020" class="text" name="year" required maxlength="4">
+              <span>Año</span>
+
+              <input type="number" min="1" max="4" class="text" name="quarter" required maxlength="1">
+               <span>Cuatrimestre</span>
+
+            <input type="email" class="text" name="email" required>
+              <span>Email</span>
+
+              <div class="file-upload">
+                <div class="file-select">
+                  <div class="file-select-button" id="fileName">Elegir archivo (pdf)</div>
+                  <div class="file-select-name" id="noFile">No ha elegido un archivo...</div>
+                  <input type="file" name="chooseFile" id="chooseFile" required>
+                </div>
+              </div>
+
+            <br>
+
+            <button class="send">
+              Enviar
+            </button>
+          </form>
+        </div>
+
+        <script>
+                $('#chooseFile').bind('change', function () {
+          var filename = $("#chooseFile").val();
+          if (/^\s*$/.test(filename)) {
+            $(".file-upload").removeClass('active');
+            $("#noFile").text("No file chosen...");
+          }
+          else {
+            $(".file-upload").addClass('active');
+            $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+          }
+        });
+
+        </script>
+    </body>
+
+</html>
