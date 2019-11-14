@@ -18,7 +18,7 @@
           <h2 class="active">ENVIAR ARCHIVO</h2>
           <!--<h2 class="nonactive"> asd </h2>-->
           <div class="loading"><img src="{% static 'forms/img/loading.gif' %}"></div>
-          <form action="http://18.231.15.217:6570/documents/form" method="post" enctype="multipart/form-data">
+          <form action="http://localhost/documents/form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
               {% for field in uploadForm %}
                  {% if field.name == "quarter" %}
