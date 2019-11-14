@@ -147,7 +147,7 @@ def getKeyWords(documentId):
 @app.route('/documents/<documentId>/contents')
 def route_contents(documentId):
 	response = make_response(getFileContent(documentId), 200)
-	response.mimetype = "application/json"
+	response.mimetype = "text/plain"
 	return response
 @app.route('/documents/<documentId>/keywords')
 def route_keywords(documentId):
