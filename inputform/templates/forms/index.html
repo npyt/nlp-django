@@ -17,13 +17,33 @@
         <div class="sendfile">
           <h2 class="active">ENVIAR ARCHIVO</h2>
           <!--<h2 class="nonactive"> asd </h2>-->
-
-          <form action="http://18.231.174.90:6570/documents/form" method="post" enctype="multipart/form-data">
+          <div class="loading"><img src="{% static 'forms/img/loading.gif' %}"></div>
+          <form action="http://18.231.15.217:6570/documents/form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
               {% for field in uploadForm %}
+                 {% if field.name == "quarter" %}
+                  <label for="{{ field.name }}">{{ field.label }}</label>
+                   <select name="{{ field.name }}" class="select">
+                      <option value="1">1</option>
+                      <option value="1">2</option>
+                      <option value="1">A</option>
+                   </select>
+                    {% elif field.name == "students_ids" %}
+                    {% elif field.name == "students_names" %}
+                    <label>Alumnos</label>
+                    <input type="text" class="form-control students_names" placeholder="Nombre del alumno" required name="{{ field.name }}" id="{{ field.name }}">
+                    <input type="text" class="form-control students_ids" placeholder="Id del alumno" required name="students_ids" id="students_ids">
+                    <div class="main-row">
+                      <button type="button" class="add">Agregar alumno</button>
+                    </div>
+                    {% elif field.name == "year" %}
+                     <label for="{{ field.name }}">{{ field.label }}</label>
+                     <input type="number" id="datepicker" name="year" id="year" required max="2020" />
 
-                <label for="{{ field.name }}">{{ field.label }}</label>
-                {{ field }}
+                   {% else %}
+                    <label for="{{ field.name }}">{{ field.label }}</label>
+                   {{ field }}
+                 {% endif %}
             {% endfor %}
 
             <button type="submit" class="send">
@@ -31,21 +51,7 @@
             </button>
           </form>
         </div>
-
-        <script>
-                $('#chooseFile').bind('change', function () {
-          var filename = $("#chooseFile").val();
-          if (/^\s*$/.test(filename)) {
-            $(".file-upload").removeClass('active');
-            $("#noFile").text("No file chosen...");
-          }
-          else {
-            $(".file-upload").addClass('active');
-            $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
-          }
-        });
-
-        </script>
     </body>
+    <script src="{% static 'forms/js/formScript.js' %}"></script>
 
 </html>
