@@ -14,7 +14,7 @@ import bs4
 import time
 import re
 
-apiURL = "http://localhost"
+apiURL = "http://54.94.183.24"
 apiPort = "6570"
 
 app = Flask(__name__)
@@ -197,7 +197,12 @@ def scrappingcontent():
 		if(url != urls[len(urls)-1]):
 			url=' '.join(url)
 			url = url.split('&')[0]
-			items.append(ScrappingResultItem(url, getTextFromURL(url)).__dict__)
+			content = []
+			try:
+				content = getTextFromURL(url)
+			except:
+				print("An exception occurred")
+			items.append(ScrappingResultItem(url, content).__dict__)
 	
 	body = json.dumps(items)
 	response = make_response(body, 200)
