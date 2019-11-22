@@ -185,8 +185,9 @@ def route_keywords(documentId):
 def scrappingcontent():
 	n = request.args.get('n', default = 10, type = int)
 	q = request.args.get('q', default = "nlp")
+	hl = request.args.get('hl', default = "es")
 	
-	page = requests.get("https://www.google.com/search?q=" + q + "&num=" + str(n))
+	page = requests.get("https://www.google.com/search?q=" + q + "&num=" + str(n) + "&hl=" + hl)
 	soup = bs4.BeautifulSoup(page.content, 'html.parser')
 	urls=[]
 	links = soup.findAll("a")
