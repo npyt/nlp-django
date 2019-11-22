@@ -6,3 +6,4 @@ pip install tika==1.19
 pip install numpy
 pip install spacy
 python -m spacy download es
+pip install bs4

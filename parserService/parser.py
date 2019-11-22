@@ -3,12 +3,16 @@ import urllib.request
 import requests
 from tika import parser
 from flask import Flask, make_response
+from flask import request
 import os
 from collections import OrderedDict
 import numpy as np
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 import array
+import bs4
+import time
+import re
 
 apiURL = "http://localhost"
 apiPort = "6570"
@@ -144,11 +148,30 @@ def getKeyWords(documentId):
 	tr4w.analyze(text, candidate_pos = ['NOUN', 'PROPN'], window_size=4, lower=False)
 	return tr4w.get_keywords(10)
 
+def getTextFromURL(url):
+	response = requests.get(url)
+
+	data = []
+	if response is not None:
+		html = bs4.BeautifulSoup(response.text, 'html.parser')
+
+		paragraphs = html.select("p")
+		for para in paragraphs:
+			data.append(para.text)
+	return data
+
+class ScrappingResultItem:
+	def __init__(self, url, contents):
+		self.url = url
+		self.contents = contents
+
+
 @app.route('/documents/<documentId>/contents')
 def route_contents(documentId):
 	response = make_response(getFileContent(documentId), 200)
 	response.mimetype = "text/plain"
 	return response
+	
 @app.route('/documents/<documentId>/keywords')
 def route_keywords(documentId):
 	keywords = getKeyWords(documentId)
@@ -156,6 +179,30 @@ def route_keywords(documentId):
 	print(keywords)
 	response = make_response(keywords, 200)
 	response.mimetype = "application/json"
+	return response
+
+@app.route('/scrapping/')
+def scrappingcontent():
+	n = request.args.get('n', default = 10, type = int)
+	q = request.args.get('q', default = "nlp")
+	
+	page = requests.get("https://www.google.com/search?q=" + q + "&num=" + str(n))
+	soup = bs4.BeautifulSoup(page.content, 'html.parser')
+	urls=[]
+	links = soup.findAll("a")
+	for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+		urls.append(re.split(":(?=http)",link["href"].replace("/url?q=","")))
+	items = []
+	for url in urls:
+		if(url != urls[len(urls)-1]):
+			url=' '.join(url)
+			url = url.split('&')[0]
+			items.append(ScrappingResultItem(url, getTextFromURL(url)).__dict__)
+	
+	body = json.dumps(items)
+	response = make_response(body, 200)
+	headers = {'Content-type': 'application/json', 'charset': 'utf-8'}
+	response.headers = headers
 	return response
 
 app.run(host='0.0.0.0', port=4242)
